@@ -24,24 +24,28 @@ public class Principal {
         System.out.println(datos);
 
         // Top 10 libros descargados
-        System.out.println("Top 10 libros más descargados");
-        datos.resultados().stream().sorted(Comparator.comparing(DatosLibros::numeroDeDescargas).reversed()).limit(10).map(l -> l.titulo().toUpperCase()).forEach(System.out::println);
+        System.out.println("\n***********************************************");
+        System.out.println("\n---- Top 10 libros más descargados ----\n");
+        datos.resultados().stream().sorted(Comparator.comparing(DatosLibros::numeroDeDescargas).reversed()).limit(10).map(l -> l.titulo()).forEach(System.out::println);
+        System.out.println("\n***********************************************");
+
 
         // Búsqueda de libros por nombre
-        System.out.println("Ingrese el nombre del libro deseado: ");
+        System.out.println("\nIngrese el nombre del libro deseado: \n");
         var tituloLibro = teclado.nextLine();
         json = consumoAPI.obtenerDatos(URL_BASE + "?search="+tituloLibro.replace(" ", "+"));
         var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
         Optional<DatosLibros> libroBuscado = datosBusqueda.resultados().stream().filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase())).findFirst();
         if (libroBuscado.isPresent()){
-            System.out.println("Libro encontrado: " + libroBuscado.get());
+            System.out.println("\n***********************************************\n"+"\nLibro encontrado: " + libroBuscado.get());
         }else {
-            System.out.println("Libro no encontrado");
+            System.out.println("\n***********************************************\n"+"\nLibro no encontrado");
         }
 
         // Estadísticas
         DoubleSummaryStatistics est = datos.resultados().stream().filter(d -> d.numeroDeDescargas() > 0).collect(Collectors.summarizingDouble(DatosLibros::numeroDeDescargas));
         System.out.println("\nCantidad media de descargas: " + est.getAverage() +"\nCantidad máxima de descargas: " + est.getMax() +"\nCantidad mínima de descargas: "+ est.getMin() +"\nCantidad de registros evaluados: " + est.getCount());
+        System.out.println("\n***********************************************");
 
 
     }
